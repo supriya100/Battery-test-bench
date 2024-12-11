@@ -1,0 +1,56 @@
+/* You can add global styles to this file, and also import other style files */
+.first-text{
+font-weight: bold;
+font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+text-align: center;
+margin: 35px;
+font-size: x-large;
+}
+
+.icon{
+    
+    
+    height: 60px;
+    width: 100px;
+    background-size: cover;
+   position: absolute;
+   top: 20px;
+    background-image: url('./assets/MAN_bnk_logo.png');
+}
+
+.hr{
+    border-color: black;
+    height: 2px;
+}
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+
+
+.file-container {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  
+  .browse-button {
+    background-color: #303C49;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    border: none;
+    position: relative;
+    right: -400px;
+  }
+  
+  .file-input {
+    display:inline-block; 
+    right: -500px;
+    position: relative;
+  }
+  canvas {
+    width: 100%;
+    height: 400px;
+  }
+  

@@ -1,0 +1,19 @@
+<div class="icon"></div>
+<div class="first-text">
+BATTERY TEST BENCH DATA ANALYSIS 
+</div>
+<hr/>
+<div class="container">
+ <h5>enter the folder path to save plots</h5>
+
+  
+  <input type="file" (change)="onFileChange($event)" accept=".txt" multiple />
+
+  
+  <button (click)="generateGraph()">Generate Graph</button>
+
+  
+  <div id="chart-container" style="width: 80%; max-width: 800px;">
+    <canvas id="myChart"></canvas>
+  </div>
+</div>
