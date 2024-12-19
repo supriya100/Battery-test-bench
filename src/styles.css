@@ -1,5 +1,5 @@
 .firstText{
-  font-weight: 600;
+  font-weight: 800;
   font-style:normal;
   text-align: center;
   font-size: large;
@@ -19,7 +19,13 @@
   top: 90px
 }
 
-
+.selectedFiles{
+  text-align: center;
+  margin: 18px;
+  top: -100px;
+  position: relative;
+  font-size: large;
+}
 .file-input {
   display: none;
 }
@@ -36,27 +42,114 @@
   text-align: center;
   transition: background-color 0.3s ease;
   position: relative;
-  left: 42%;
+  left: 33%;
   top: -60px;
   height: 20px;
 }
 
-
-.file-label:hover {
-  background-color: white;
+.selectedFiles {
+  margin-top: 20px;
 }
 
+.selectedFiles h4 {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
 
+.selectedFiles ul {
+  list-style: none;
+  padding: 0;
+}
+
+.file-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.file-item span {
+  flex-grow: 1;
+  font-weight: bold;
+}
+
+.dropdown {
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: black;
+  color: white;
+}
+
+.color-box {
+  
+padding: 10px;
+  height: 20px;
+  display:inline-block;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-right: 8px;
+  width: 10px;
+}
+
+.ok{
+  background-color: black;
+  color: white;
+  position: relative;
+  left: 100px;
+}
+.reset{
+  background-color: black;
+  color: white;
+  position: relative;
+  left: 110px;
+}
 .file-label span {
   padding-right: 10px;
   display: inline-block;
   
 }
 
-
-.file-input:focus + .file-label {
-  border: 2px solid #4CAF50;
+.plotGraph{
+  display: flex;
+  justify-content: center;
+  background-color: black;
+  align-items: center;
+  margin-top: -80px;
+  
+  position: relative;
+  left: 45%;
+  color: white;
+  gap: 10px;
 }
+
 .h3{
   background-color: black;
+}
+
+.pagination-controls {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 10px;
+  gap: 10px;
+}
+
+.pagination-controls button {
+  padding: 5px 15px;
+  border: none;
+  background-color: black;
+  color: white;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+.pagination-controls button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.pagination-controls span {
+  font-weight: bold;
 }
