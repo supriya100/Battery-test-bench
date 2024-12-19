@@ -1,19 +1,27 @@
-<div class="icon"></div>
-<div class="first-text">
-BATTERY TEST BENCH DATA ANALYSIS 
-</div>
-<hr/>
-<div class="container">
- <h5>enter the folder path to save plots</h5>
+<div class="firstText">
+  <div class="icon">
 
-  
-  <input type="file" (change)="onFileChange($event)" accept=".txt" multiple />
-
-  
-  <button (click)="generateGraph()">Generate Graph</button>
-
-  
-  <div id="chart-container" style="width: 80%; max-width: 800px;">
-    <canvas id="myChart"></canvas>
   </div>
+  <h3>BATTERY TEST BENCH DATA ANALYSIS</h3>
+  <hr/>
 </div>
+<div class="file-label">
+  <input multiple type="file" (change)="onFileSelected($event)" />
+  <h3 *ngIf="datasets.length > 0">File:{{ datasets[currentPage]?.label }}</h3>
+  
+  <div style="margin: 20px; text-align: center;">
+   
+  </div>
+
+</div>
+<button *ngIf="datasets.length > 0" (click)="plotGraph()" >Fetch Data & Plot Graph</button>
+<div style="width: 80%; margin: auto; text-align: center;">
+  <canvas id="chartCanvas"></canvas>
+</div>
+
+<div style="text-align: center; margin-top: 20px;"  >
+  <button  (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
+  <span style="margin: 0 10px;">Page {{ currentPage + 1 }} of {{ datasets.length }}</span>
+  <button (click)="nextPage()" [disabled]="currentPage === datasets.length - 1">Next</button>
+</div>
+

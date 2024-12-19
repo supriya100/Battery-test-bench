@@ -1,56 +1,62 @@
-/* You can add global styles to this file, and also import other style files */
-.first-text{
-font-weight: bold;
-font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-text-align: center;
-margin: 35px;
-font-size: x-large;
+.firstText{
+  font-weight: 600;
+  font-style:normal;
+  text-align: center;
+  font-size: large;
+  padding: 25px;
+  position: relative;
+  top: -90px;
 }
 
 .icon{
-    
-    
-    height: 60px;
-    width: 100px;
-    background-size: cover;
-   position: absolute;
-   top: 20px;
-    background-image: url('./assets/MAN_bnk_logo.png');
+  background-image: url('../src/assets/MAN_bnk_logo.png');
+  height: 100px;
+  background-size: contain;
+  background-repeat: no-repeat;
+  width: 100px;
+  margin: 25px;
+  position: relative;
+  top: 90px
 }
 
-.hr{
-    border-color: black;
-    height: 2px;
+
+.file-input {
+  display: none;
 }
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
 
 
-.file-container {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
+.file-label {
+  display: inline-block;
+
+  background-color: black; 
+  color: white; 
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+  transition: background-color 0.3s ease;
+  position: relative;
+  left: 42%;
+  top: -60px;
+  height: 20px;
+}
+
+
+.file-label:hover {
+  background-color: white;
+}
+
+
+.file-label span {
+  padding-right: 10px;
+  display: inline-block;
   
-  .browse-button {
-    background-color: #303C49;
-    color: white;
-    padding: 10px;
-    cursor: pointer;
-    border-radius: 5px;
-    font-size: 16px;
-    border: none;
-    position: relative;
-    right: -400px;
-  }
-  
-  .file-input {
-    display:inline-block; 
-    right: -500px;
-    position: relative;
-  }
-  canvas {
-    width: 100%;
-    height: 400px;
-  }
-  
+}
+
+
+.file-input:focus + .file-label {
+  border: 2px solid #4CAF50;
+}
+.h3{
+  background-color: black;
+}
