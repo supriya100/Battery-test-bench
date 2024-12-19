@@ -1,27 +1,61 @@
 <div class="firstText">
   <div class="icon">
-
   </div>
   <h3>BATTERY TEST BENCH DATA ANALYSIS</h3>
   <hr/>
 </div>
-<div class="file-label">
-  <input multiple type="file" (change)="onFileSelected($event)" />
-  <h3 *ngIf="datasets.length > 0">File:{{ datasets[currentPage]?.label }}</h3>
-  
-  <div style="margin: 20px; text-align: center;">
-   
-  </div>
 
+<div class="file-label">
+ <input multiple type="file" (change)="onFileSelected($event)" id="fileInput" />
+ <button class="ok" (click)="onOkClick()" [disabled]="!fileSelected">OK</button>
+<button (click)="onResetClick()" class="reset">Reset</button>
+<h3 *ngIf="datasets.length > 0">File:{{ datasets[currentPage]?.label }}</h3>
 </div>
-<button *ngIf="datasets.length > 0" (click)="plotGraph()" >Fetch Data & Plot Graph</button>
-<div style="width: 80%; margin: auto; text-align: center;">
+
+
+<div class="selectedFiles">
+<h4   *ngIf="selectedFileNames.length">Selected Files:</h4>
+<ul    *ngIf="selectedFileNames.length">
+  <li *ngFor="let fileName of selectedFileNames; let i = index" class="file-item">
+
+    <span 
+    class="color-box"
+    [style.background-color]="colors[i]"
+    title="Color: {{ colors[i] }}"
+  ></span>
+
+
+    <span>{{fileName}}</span>
+   
+    <label for="lineStyle{{ i }}">Line Style:</label>
+    <select [(ngModel)]="lineStyles[i]" class="dropdown">
+      
+      <option value="solid">Solid</option>
+      <option value="dashed">Dashed</option>
+      <option value="dotted">Dotted</option>
+    </select>
+    <label for="markers{{ i }}">Markers:</label>
+    <select [(ngModel)]="markers[i]" class="dropdown">
+      <option value="circle">Circle</option>
+      <option value="square">Square</option>
+      <option value="triangle">Triangle</option>
+      <option value="none">None</option>
+    </select>
+  </li>
+</ul>
+</div>
+
+
+<button *ngIf="datasets.length > 0" (click)="plotGraph()" class="plotGraph">Fetch Data & Plot Graph</button>
+
+
+<div >
   <canvas id="chartCanvas"></canvas>
 </div>
 
-<div style="text-align: center; margin-top: 20px;"  >
+<div *ngIf="datasets.length > 1" class="pagination-controls" >
   <button  (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
-  <span style="margin: 0 10px;">Page {{ currentPage + 1 }} of {{ datasets.length }}</span>
+  <span>Page {{ currentPage + 1 }} of {{ datasets.length }}</span>
   <button (click)="nextPage()" [disabled]="currentPage === datasets.length - 1">Next</button>
 </div>
 
