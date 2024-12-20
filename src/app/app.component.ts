@@ -38,20 +38,18 @@ export class AppComponent implements OnInit {
   }
   @ViewChildren('graphCanvas') graphCanvases!: QueryList<ElementRef<HTMLCanvasElement>>;
   title = 'batteryTestBench';
-
   selectedFileNames: string[] = [];
-  
   currentPage: number = 0;
   chart: Chart | null = null;
   datasets: {
     fileName: any; label: string; x_values: string[]; y_values: number[] 
 }[] = [];
 
-fileSelected: boolean = false;
+  fileSelected: boolean = false;
   moreFiles: boolean = false;
   lineStyles: string[] = [];
-markers: string[] = [];
-colors: string[] = [
+  markers: string[] = [];
+  colors: string[] = [
   "#303C49", "#E40045", "#4489C5", "#6B9700", "#FFB500",
   "#CC0000", "#91B900", "#FFCD00", "#000000", "#838A92",
   "#33FF57", "#3357FF", "#FF33A1", "#FFD700", "#ADFF2F",
@@ -60,140 +58,175 @@ colors: string[] = [
   "#2E8B57", "#9ACD32", "#7B68EE", "#8B008B", "#FF6347",
   "#4682B4", "#D2691E", "#FF8C00"
 ]; 
-  
-  onFileSelected(event: Event): void {
-    const input = event.target as HTMLInputElement;
-  
-    if (input?.files?.length) {
+ onFileSelected(event: Event): void {
+  const input = event.target as HTMLInputElement;
 
-      this.selectedFileNames = Array.from(input.files).map(file => file.name);
-      this.lineStyles = this.selectedFileNames.map(() => 'solid');
-      this.markers = this.selectedFileNames.map(() => 'circle');
-      
-      this.fileSelected = true;
   
-      this.datasets = []; 
-      const files = Array.from(input.files);
-  
-      files.forEach((file) => {
-        const reader = new FileReader();
-        reader.onload = (e: ProgressEvent<FileReader>) => {
-          try {
-            const content = JSON.parse(e.target?.result as string);
-            const fileDatasets = content.datasets.map((dataset: any) => ({
-              ...dataset,
-              fileName: file.name, 
-            }));
-  
-            this.datasets.push(...fileDatasets);
-  
-    
-            if (this.datasets.length === fileDatasets.length) {
-              this.currentPage = 0; 
-              
-            }
-          } catch (error) {
-            console.error('Invalid JSON format:', error);
-            alert(`Invalid JSON file: ${file.name}`);
-          }
-        };
-        reader.readAsText(file);
-      });
-    }
-  }
-  
-  fetchData(): void {
-    this.graphService.getData().subscribe((response: any) => {
-      this.datasets = response.datasets.map((dataset: any) => ({
-        ...dataset,
-        fileName: 'Fetched Data', 
-      }));
-  
-      this.currentPage = 0;
-      this.plotGraph();
+   this.datasets = [];
+
+   if (input?.files?.length) {
+    this.selectedFileNames = Array.from(input.files).map(file => file.name); 
+    this.fileSelected = true; 
+  Array.from(input.files).forEach((file) => {
+      const reader = new FileReader();
+   reader.onload = (e: ProgressEvent<FileReader>) => {
+       const content = e.target?.result as string;
+       this.processFileContent(content, file.name); 
+      };
+ reader.readAsText(file);
     });
+  } else {
+    this.selectedFileNames = [];
+    this.fileSelected = false;
   }
-  
-  plotGraph(): void {
-    if (!this.datasets.length) return;
-  
-    const dataset = this.datasets[this.currentPage];
-  
-    if (this.chart) {
-      this.chart.destroy();
-    }
-  
-    const chartDatasets = this.datasets.map((dataset, index) => ({
-      label: dataset.label,
-      data: dataset.y_values,
-      borderColor: this.colors[index], 
-      backgroundColor: this.colors[index] + '80', 
-      fill: false,
-    }));
+  this.lineStyles = Array(this.datasets.length).fill('solid');
+}
 
 
-    this.chart = new Chart('chartCanvas', {
-      type: 'line',
-      data: {
-        labels: dataset.x_values,
-        datasets: chartDatasets
+processFileContent(content: string, fileName: string): void {
+  
+  const rows = content.split('\n');
+  const parsedData = rows.map(row => row.split('\t')); 
+   const xValues: string[] = parsedData.map(row => row[0]); 
+  const yValues: number[] = parsedData.map(row => parseFloat(row[4])); 
+
+  
+  this.datasets.push({
+    fileName: fileName,  
+    label: fileName,     
+    x_values: xValues,   
+    y_values: yValues,   
+  });
+
+  this.lineStyles = Array(this.datasets.length).fill('solid');
+}
+
+initializeGraphData(response: any): void {
+  this.datasets = response.datasets.map((dataset: any, index: number) => ({
+    ...dataset,
+    fileName: this.selectedFileNames[index] || `File ${index + 1}`,
+  }));
+  this.currentPage = 0; 
+  this.plotCurrentDataset();
+}
+
+
+plotCurrentDataset(): void {
+  if (this.datasets.length === 0 || this.currentPage >= this.datasets.length) {
+    console.error('Invalid dataset or page index.');
+    return;
+  }
+
+  const currentDataset = this.datasets[this.currentPage];
+  const selectedStyle = this.lineStyles[this.currentPage]; 
+  let borderDash: number[] = [];
+  if (selectedStyle === 'dashed') {
+    borderDash = [10, 5]; 
+  } else if (selectedStyle === 'dotted') {
+    borderDash = [2, 2]; 
+  }
+  if (this.chart) {
+    this.chart.destroy(); 
+  }
+
+  const ctx = document.getElementById('chartCanvas') as HTMLCanvasElement;
+  
+  this.chart = new Chart(ctx, {
+    type: 'line',
+    data: {
+      labels: currentDataset.x_values,
+      datasets: [
+        {
+          label: currentDataset.label,
+          data: currentDataset.y_values,
+          borderColor: this.getColor(this.currentPage),
+          borderWidth: 2,
+          pointStyle: 'circle',
+          borderDash: borderDash
+        },
+      ],
+    },
+    options: {
+      responsive: true,
+      plugins: {
+        legend: {
+          display: true,
+        },
       },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: {
+      scales: {
+        x: {
+          title: {
             display: true,
-            position: 'top',
+            text: 'X Axis',
           },
         },
-        scales: {
-          x: {
-            title: {
-              display: true,
-              text: 'Time Period',
-            },
-          },
-          y: {
-            title: {
-              display: true,
-              text: 'Values',
-            },
+        y: {
+          title: {
+            display: true,
+            text: 'Y Axis',
           },
         },
       },
+    },
+  });
+}
+getColor(index: number): string {
+  const colors = [
+    '#303C49', '#E40045', '#4489C5', '#6B9700', '#FFB500',
+    '#CC0000', '#91B900', '#FFCD00', '#000000', '#838A92',
+    '#33FF57', '#3357FF', '#FF33A1', '#FFD700', '#ADFF2F',
+  ];
+  return colors[index % colors.length];
+}
+onPlotGraphClick(): void {
+  if (this.selectedFileNames.length === 0) {
+    console.error("No files selected for upload.");
+    return;
+  }
+
+  
+  const formData = new FormData();
+
+  const input = document.querySelector('input[type="file"]') as HTMLInputElement;
+  if (input && input.files) {
+    Array.from(input.files).forEach((file) => {
+      formData.append('files', file, file.name);
     });
   }
+
   
-  nextPage(): void {
-    if (this.currentPage < this.datasets.length - 1) {
-      this.currentPage++;
-      this.plotGraph();
+  this.graphService.uploadFiles(formData).subscribe(
+    (response: any) => {
+  
+      this.datasets = response.datasets; 
+      this.plotCurrentDataset();
+    },
+    (error) => {
+      console.error('Error while uploading files:', error);
     }
-  }
+  );
+}
+
+ 
   
-  previousPage(): void {
+  onLineStyleChange(index: number): void {
+  this.lineStyles[index] = this.lineStyles[index]  ;
+    this.plotCurrentDataset();
+  }
+  previousDataset(): void {
     if (this.currentPage > 0) {
       this.currentPage--;
-      this.plotGraph();
+      this.plotCurrentDataset();
     }
   }
+  nextDataset(): void {
   
-  private getRandomColor(alpha = 1): string {
-    const r = Math.floor(Math.random() * 255);
-    const g = Math.floor(Math.random() * 255);
-    const b = Math.floor(Math.random() * 255);
-    return `rgba(${r},${g},${b},${alpha})`;
-  }
-  
-  onOkClick(): void {
-    if (this.fileSelected) {
-      console.log('Files selected:', this.selectedFileNames);
+    if (this.currentPage < this.datasets.length - 1) {
+      this.currentPage++;
       
-    } else {
-      alert('No files selected!');
+      this.plotCurrentDataset();
     }
   }
-  
   onResetClick(): void {
     const fileInput = document.getElementById('fileInput') as HTMLInputElement;
     if(fileInput){
