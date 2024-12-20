@@ -7,7 +7,7 @@
 
 <div class="file-label">
  <input multiple type="file" (change)="onFileSelected($event)" id="fileInput" />
- <button class="ok" (click)="onOkClick()" [disabled]="!fileSelected">OK</button>
+ 
 <button (click)="onResetClick()" class="reset">Reset</button>
 <h3 *ngIf="datasets.length > 0">File:{{ datasets[currentPage]?.label }}</h3>
 </div>
@@ -23,12 +23,10 @@
     [style.background-color]="colors[i]"
     title="Color: {{ colors[i] }}"
   ></span>
-
-
-    <span>{{fileName}}</span>
+<span>{{fileName}}</span>
    
     <label for="lineStyle{{ i }}">Line Style:</label>
-    <select [(ngModel)]="lineStyles[i]" class="dropdown">
+    <select [(ngModel)]="lineStyles[i]" (change)="onLineStyleChange(i)"   class="dropdown">
       
       <option value="solid">Solid</option>
       <option value="dashed">Dashed</option>
@@ -44,9 +42,7 @@
   </li>
 </ul>
 </div>
-
-
-<button *ngIf="datasets.length > 0" (click)="plotGraph()" class="plotGraph">Fetch Data & Plot Graph</button>
+<button *ngIf="datasets.length > 0" (click)="onPlotGraphClick()" class="plotGraph">Fetch Data & Plot Graph</button>
 
 
 <div >
@@ -54,8 +50,8 @@
 </div>
 
 <div *ngIf="datasets.length > 1" class="pagination-controls" >
-  <button  (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
-  <span>Page {{ currentPage + 1 }} of {{ datasets.length }}</span>
-  <button (click)="nextPage()" [disabled]="currentPage === datasets.length - 1">Next</button>
+  <button  (click)="previousDataset()" [disabled]="currentPage === 0">Previous</button>
+  <span>Dataset {{ currentPage + 1 }} of {{ datasets.length }} </span>
+  <button (click)="nextDataset()" [disabled]="currentPage === datasets.length - 1">Next</button>
 </div>
 
